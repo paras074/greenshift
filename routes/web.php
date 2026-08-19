@@ -26,6 +26,7 @@ use App\Http\Controllers\LeadAssignmentController;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\RfqQuoteController;
 use App\Http\Controllers\DialpadController;
+use App\Http\Controllers\TemplateController;
 
 
 // // ── By Role ──────────────────────────────────────────────
@@ -224,8 +225,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/rfq-quotes/{id}/select', [RfqQuoteController::class, 'select'])->name('rfq_quotes.select');
     Route::match(['GET', 'POST'], '/lead/assign-supplier', [RfqQuoteController::class, 'assignSupplier'])->name('rfq_quotes.assign_supplier');
     
-    // check blocked phone route 
+    // check blocked phone route
     Route::post('/dialpad/check-blocked-number', [DialpadController::class, 'checkBlockedNumber'])->name('dialpad.check-blocked-number');
+
+    // ======= Templates (Email / LOA) =======
+    Route::resource('templates', TemplateController::class)->except(['show']);
+    Route::patch('templates/{template}/set-active', [TemplateController::class, 'setActive'])->name('templates.set-active');
 
 });
 

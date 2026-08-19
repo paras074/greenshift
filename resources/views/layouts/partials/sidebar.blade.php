@@ -182,16 +182,16 @@
             <i class="bi bi-chevron-down dashboard-nav-arrow"></i>
           </a>
           <ul class="dashboard-sub-menu">
-              {{-- <li>
-                <a href="{{ route('leads.index') }}" class="dashboard-sub-link {{ request()->routeIs('leads.index') ? 'active' : '' }}">
-                  <i class="bi bi-list-ul"></i> Email Templates
+              <li>
+                <a href="{{ route('templates.index') }}" class="dashboard-sub-link {{ request()->routeIs('templates.index') ? 'active' : '' }}">
+                  <i class="bi bi-list-ul"></i> All Templates
                 </a>
               </li>
               <li>
-                <a href="{{ route('leads.funnel') }}" class="dashboard-sub-link {{ request()->routeIs('leads.funnel') ? 'active' : '' }}">
-                  <i class="bi bi-funnel"></i> Add New Template
+                <a href="{{ route('templates.create') }}" class="dashboard-sub-link {{ request()->routeIs('templates.create') ? 'active' : '' }}">
+                  <i class="bi bi-plus-lg"></i> Add New Template
                 </a>
-              </li> --}}
+              </li>
           </ul>
         </li>
       @endcan

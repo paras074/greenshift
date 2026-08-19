@@ -152,6 +152,23 @@
             display: flex;
             justify-content: space-between;
         }
+
+        /* Body content pulled from the active LOA template (CKEditor output) */
+        .loa-body p {
+            font-size: 10pt;
+            margin-bottom: 6px;
+            line-height: 1.5;
+        }
+        .loa-body ul {
+            margin: 8px 0 8px 20px;
+            font-size: 10pt;
+        }
+        .loa-body li {
+            margin-bottom: 5px;
+        }
+        .loa-body a {
+            color: #5693b1;
+        }
     </style>
 </head>
 <body>
@@ -282,43 +299,58 @@
     </table>
 
     <!-- PAGE 2 CONTENT -->
-    <p class="body-para">to act on our behalf in relation to the supply of electricity, gas and/or water.</p>
+    @php
+        // Guard for environments where the migration hasn't run yet.
+        $loaTemplate = \Illuminate\Support\Facades\Schema::hasTable('templates')
+            ? \App\Models\Template::activeFor('loa')
+            : null;
+    @endphp
 
-    <p class="body-para">We hereby authorise the Broker and its appointed representatives to carry out the activities listed below on our behalf. We understand that the TPI may use the services of the following agents to assist in carrying out these activities:</p>
+    @if($loaTemplate && filled($loaTemplate->content))
+        {{-- Editable body pulled from the active LOA template (Templates > LOA) --}}
+        <div class="loa-body">
+            {!! $loaTemplate->content !!}
+        </div>
+    @else
+        {{-- Fallback: original hardcoded body (used if no active LOA template exists) --}}
+        <p class="body-para">to act on our behalf in relation to the supply of electricity, gas and/or water.</p>
 
-    <ul class="auth-list">
-        <li>OnlineDirect Limited, 300 Pavilion Drive, Brackmills, Northants, NN4 7YE (Company no: 03599738)</li>
-        <li>UD Software Solutions Group Ltd t/a Powwr, Parkway House | Palatine Rd | Manchester M22 4DB, (Company No: 06904669)</li>
-    </ul>
+        <p class="body-para">We hereby authorise the Broker and its appointed representatives to carry out the activities listed below on our behalf. We understand that the TPI may use the services of the following agents to assist in carrying out these activities:</p>
 
-    <p class="body-para">Access industry held data including consumptions, contract end dates, metering information, issue termination notices should the need arise and opt out of future contract renewals on our behalf.</p>
+        <ul class="auth-list">
+            <li>OnlineDirect Limited, 300 Pavilion Drive, Brackmills, Northants, NN4 7YE (Company no: 03599738)</li>
+            <li>UD Software Solutions Group Ltd t/a Powwr, Parkway House | Palatine Rd | Manchester M22 4DB, (Company No: 06904669)</li>
+        </ul>
 
-    <p class="body-para">Contact our current supplier to resolve any issues arising, therefore they can request all billing information and authorise any adjustments, refunds, or billing amendments.</p>
+        <p class="body-para">Access industry held data including consumptions, contract end dates, metering information, issue termination notices should the need arise and opt out of future contract renewals on our behalf.</p>
 
-    <p class="body-para">Raise and deal with complaints on our behalf to a satisfactory resolution (The supplier will notify the customer if a complaint is raised on the account and confirm when this has been resolved)</p>
+        <p class="body-para">Contact our current supplier to resolve any issues arising, therefore they can request all billing information and authorise any adjustments, refunds, or billing amendments.</p>
 
-    <p class="body-para">By signing the authority letter you understand the services provided by Green Shift Energy Limited are paid for via a fee directly if agreed or via an uplift on the unit rate and if the fee is via an uplift this will be collected by the supplier via the customer's supply bill and paid to us.</p>
+        <p class="body-para">Raise and deal with complaints on our behalf to a satisfactory resolution (The supplier will notify the customer if a complaint is raised on the account and confirm when this has been resolved)</p>
 
-    <p class="body-para-bold">This Letter of Authority does not give the Broker authority to sign a contract on our behalf. We agree and accept that:</p>
+        <p class="body-para">By signing the authority letter you understand the services provided by Green Shift Energy Limited are paid for via a fee directly if agreed or via an uplift on the unit rate and if the fee is via an uplift this will be collected by the supplier via the customer's supply bill and paid to us.</p>
 
-    <ul class="auth-list">
-        <li>the Broker is acting as an introducer for energy suppliers and is not acting as our agent.</li>
-        <li>the Broker can process any contract agreed/signed by us on our behalf.</li>
-        <li>a credit check may be carried out against us (and/or our directors/partners/owners).</li>
-    </ul>
+        <p class="body-para-bold">This Letter of Authority does not give the Broker authority to sign a contract on our behalf. We agree and accept that:</p>
 
-    <p class="body-para">We confirm that we have authorised the Broker to use our customer data for the purposes of delivering services to us and to share that data with selected relevant third parties in order to do so.</p>
+        <ul class="auth-list">
+            <li>the Broker is acting as an introducer for energy suppliers and is not acting as our agent.</li>
+            <li>the Broker can process any contract agreed/signed by us on our behalf.</li>
+            <li>a credit check may be carried out against us (and/or our directors/partners/owners).</li>
+        </ul>
 
-    <p class="body-para">This letter of authority is effective from the date of signature and remains valid for a period of 12 months from such date.</p>
+        <p class="body-para">We confirm that we have authorised the Broker to use our customer data for the purposes of delivering services to us and to share that data with selected relevant third parties in order to do so.</p>
 
-    <p class="body-para">This letter of authority supersedes all previous letters of authority.</p>
+        <p class="body-para">This letter of authority is effective from the date of signature and remains valid for a period of 12 months from such date.</p>
 
-    <p class="body-para">In signing this letter of authority we agree that the terms and conditions of Green Shift Energy Limited apply to the services to be provided and that a copy of those terms and conditions is available at <strong><a href="https://greenshiftenergy.co.uk/terms-and-conditions/" 
-   style="color: #5693b1;" 
-   target="_blank" 
-   rel="noopener noreferrer">
-   https://greenshiftenergy.co.uk/terms-and-conditions/
-</a></strong></p>
+        <p class="body-para">This letter of authority supersedes all previous letters of authority.</p>
+
+        <p class="body-para">In signing this letter of authority we agree that the terms and conditions of Green Shift Energy Limited apply to the services to be provided and that a copy of those terms and conditions is available at <strong><a href="https://greenshiftenergy.co.uk/terms-and-conditions/"
+       style="color: #5693b1;"
+       target="_blank"
+       rel="noopener noreferrer">
+       https://greenshiftenergy.co.uk/terms-and-conditions/
+    </a></strong></p>
+    @endif
 
     <!-- SIGNATURE SECTION -->
     <div class="signature-section">

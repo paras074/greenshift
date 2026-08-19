@@ -81,7 +81,7 @@
               @endcan
               @can('delete lead-statuses')
                 <form method="POST" action="{{ route('settings.lead-statuses.destroy', $status) }}"
-                      onsubmit="return confirm('Delete {{ $status->name }}?')" style="display:inline;">
+                      data-confirm="Delete {{ $status->name }}?" data-confirm-btn="Delete" style="display:inline;">
                   @csrf @method('DELETE')
                   <button type="submit" class="gs-edit-btn" title="Delete"
                     style="border-color:rgba(220,38,38,0.3); color:#dc2626;">

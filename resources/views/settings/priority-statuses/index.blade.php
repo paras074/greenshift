@@ -72,7 +72,7 @@
               @endcan
               @can('delete priority-statuses')
                 <form method="POST" action="{{ route('settings.priority-statuses.destroy', $priority) }}"
-                      onsubmit="return confirm('Delete {{ $priority->name }}?')" style="display:inline;">
+                      data-confirm="Delete {{ $priority->name }}?" data-confirm-btn="Delete" style="display:inline;">
                   @csrf @method('DELETE')
                   <button type="submit" class="gs-edit-btn" title="Delete"
                     style="border-color:rgba(220,38,38,0.3); color:#dc2626;">

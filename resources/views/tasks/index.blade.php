@@ -268,7 +268,7 @@
         const noteInput = document.getElementById('noteData');
         const data = noteInput.value;
         
-        if (!data) return alert("Please type a note.");
+        if (!data) return window.miniAlert("Please type a note.");
 
         try {
             let url = "{{ route('tasks.store-note', ':id') }}";

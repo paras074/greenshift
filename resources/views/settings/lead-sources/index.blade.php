@@ -74,7 +74,7 @@
               @endcan
               @can('delete lead-sources')
                 <form method="POST" action="{{ route('settings.lead-sources.destroy', $source) }}"
-                      onsubmit="return confirm('Delete {{ $source->name }}?')" style="display:inline;">
+                      data-confirm="Delete {{ $source->name }}?" data-confirm-btn="Delete" style="display:inline;">
                   @csrf @method('DELETE')
                   <button type="submit" class="gs-edit-btn" title="Delete"
                     style="border-color:rgba(220,38,38,0.3); color:#dc2626;">

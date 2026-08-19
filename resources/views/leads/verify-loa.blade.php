@@ -278,7 +278,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // 3. Function to Save a New Note
         window.saveNote = async function() {
             const data = document.getElementById('noteData').value;
-            if (!data) return alert("Please type a note.");
+            if (!data) return window.miniAlert("Please type a note.");
         
             try {
                 const response = await fetch("{{ route('notes.store') }}", {
@@ -308,7 +308,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // 3. Function to Save a New Note
         window.CallNoteAdd = async function() {
             const data = document.getElementById('callNoteInput').value;
-            if (!data) return alert("Please type a note.");
+            if (!data) return window.miniAlert("Please type a note.");
         
             try {
                 const response = await fetch("{{ route('notes.store') }}", {

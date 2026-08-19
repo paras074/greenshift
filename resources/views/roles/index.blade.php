@@ -47,7 +47,7 @@
         @endcan
         @can('delete roles')
           @if(!in_array($role->name, ['superadmin']))
-            <form method="POST" action="{{ route('roles.destroy', $role) }}" onsubmit="return confirm('Delete role {{ $role->name }}?')">
+            <form method="POST" action="{{ route('roles.destroy', $role) }}" data-confirm="Delete role {{ $role->name }}?" data-confirm-btn="Delete">
               @csrf @method('DELETE')
               <button type="submit" class="gs-btn gs-btn--danger gs-btn--sm">
                 <i class="bi bi-trash-fill"></i> Delete

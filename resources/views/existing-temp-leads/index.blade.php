@@ -388,8 +388,9 @@ function setCallData(company, phone, address) {
    DELETE SINGLE TEMP LEAD
 ════════════════════════════════════════════════════════ */
 function deleteTempLead(id, name) {
-    if (!confirm('Delete "' + name + '" from temporary leads?')) return;
-
+    window.miniConfirm('Delete "' + name + '" from temporary leads?', 'Delete', function () { _deleteTempLead(id, name); });
+}
+function _deleteTempLead(id, name) {
     fetch('{{ url("/temp-leads") }}/' + id, {
         method: 'DELETE',
         headers: {
@@ -428,8 +429,9 @@ function bulkDeleteSelected() {
     var activePanel = document.querySelector('.api-tab-panel.active');
     var checked = activePanel ? activePanel.querySelectorAll('.row-check:checked') : [];
     if (!checked.length) { showToast('warning', 'Select at least one lead to delete.'); return; }
-    if (!confirm('Delete ' + checked.length + ' selected lead(s)?')) return;
-
+    window.miniConfirm('Delete ' + checked.length + ' selected lead(s)?', 'Delete', function () { _bulkDeleteSelected(checked); });
+}
+function _bulkDeleteSelected(checked) {
     var ids = Array.from(checked).map(cb => cb.value);
 
     fetch('{{ url("/temp-leads/bulk-delete") }}', {
@@ -467,8 +469,9 @@ function bulkDeleteSelected() {
    PROMOTE SINGLE LEAD
 ════════════════════════════════════════════════════════ */
 function promoteToLead(id) {
-    if (!confirm('Promote this temporary lead to a full lead?')) return;
-
+    window.miniConfirm('Promote this temporary lead to a full lead?', 'Promote', function () { _promoteToLead(id); });
+}
+function _promoteToLead(id) {
     fetch('{{ route("gather_companies_data.google_api.make_into_leads") }}', {
         method: 'POST',
         headers: {
@@ -754,7 +757,7 @@ function handleDialpadMessages(event) {
             }, 'https://dialpad.com');
         } else if (data.method === 'user_authentication' && data.payload?.user_authenticated === false) {
             console.warn("Dialpad warning: Agent is not logged into Dialpad inside the iframe workspace.");
-            alert("Please log into your Dialpad account inside the dialer view first.");
+            window.miniAlert("Please log into your Dialpad account inside the dialer view first.");
         }
     }
 }
@@ -783,14 +786,14 @@ window.startCallLead = function() {
     // Extraction & Validation
     const leadIdValue = companyIdInput.value.trim();
     if (!leadIdValue || !/^\d+$/.test(leadIdValue)) {
-        alert("Please ensure a valid numerical Lead ID is active before calling.");
+        window.miniAlert("Please ensure a valid numerical Lead ID is active before calling.");
         return;
     }
 
     let phoneNumber = phoneSpan.innerText.trim().replace(/[\s\-\(\)]/g, '');
     
     if (!phoneNumber) {
-        alert("No target phone number found to connect.");
+        window.miniAlert("No target phone number found to connect.");
         return;
     }
 
@@ -812,7 +815,7 @@ window.startCallLead = function() {
     .then(response => response.json())
     .then(result => {
         if (result.blocked) {
-            alert("This phone number is blocked.");
+            window.miniAlert("This phone number is blocked.");
             return;
         }
         
@@ -839,7 +842,7 @@ window.startCallLead = function() {
     })
     .catch(error => {
         console.error(error);
-        alert("Unable to verify phone number.");
+        window.miniAlert("Unable to verify phone number.");
     });
 }
 

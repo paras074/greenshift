@@ -427,29 +427,27 @@
       });
 
       if (selected.length === 0) {
-          alert('Please select at least one lead.');
+          window.miniAlert('Please select at least one lead.');
           return;
       }
 
-      if (!confirm('Are you sure you want to delete selected leads?')) {
-          return;
-      }
-
-      $.ajax({
-          url: "{{ route('leads.bulk-delete') }}",
-          type: "POST",
-          data: {
-              _token: "{{ csrf_token() }}",
-              lead_ids: selected
-          },
-          success: function (res) {
-              if (res.status) {
-                  ApplyFilter(); 
+      window.miniConfirm('Are you sure you want to delete selected leads?', 'Delete', function () {
+          $.ajax({
+              url: "{{ route('leads.bulk-delete') }}",
+              type: "POST",
+              data: {
+                  _token: "{{ csrf_token() }}",
+                  lead_ids: selected
+              },
+              success: function (res) {
+                  if (res.status) {
+                      ApplyFilter();
+                  }
+              },
+              error: function (err) {
+                  window.miniAlert(err.responseJSON?.message || 'Something went wrong.');
               }
-          },
-          error: function (err) {
-              alert(err.responseJSON?.message || 'Something went wrong.');
-          }
+          });
       });
   };
 
@@ -463,7 +461,7 @@
       });
 
       if (selected.length === 0) {
-          alert('Please select at least one lead.');
+          window.miniAlert('Please select at least one lead.');
           return;
       }
       var myassignModal = new bootstrap.Modal(document.getElementById('Assignmodel'));
@@ -484,7 +482,7 @@
     window.AssignLeadsFinal = function() {
       let selectedUsers = $('#assigned_users').val();
       if (!selectedUsers || selectedUsers.length === 0) {
-          alert('Please select at least one user to assign.');
+          window.miniAlert('Please select at least one user to assign.');
           return;
       }
       let button = $('#finalAssignBtn');
@@ -502,11 +500,11 @@
                   ApplyFilter(); 
                   $('#Assignmodel').modal('hide');
               } else {
-                  alert(res.message || 'Failed to assign leads.');
+                  window.miniAlert(res.message || 'Failed to assign leads.');
               }
           },
           error: function (err) {
-              alert(err.responseJSON?.message || 'Something went wrong.');
+              window.miniAlert(err.responseJSON?.message || 'Something went wrong.');
           },
           complete: function() {
               button.prop('disabled', false).html('<i class="bi bi-plus-lg"></i> Assign');  

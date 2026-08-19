@@ -304,12 +304,12 @@
             window.AddTaskNote = function() {
                 const noteData = document.getElementById('noteData').value.trim();
                 if(!noteData){
-                    alert('Please enter a note before adding.');
+                    window.miniAlert('Please enter a note before adding.');
                     return;
                 }
 
                 if(!taskId){
-                    alert('Task ID is missing. Please save the task before adding notes.');
+                    window.miniAlert('Task ID is missing. Please save the task before adding notes.');
                     return;
                 }
 
@@ -332,12 +332,12 @@
                             notesFeed.innerHTML = data.html;
                         }
                     } else {
-                        alert('Failed to add note. Please try again.');
+                        window.miniAlert('Failed to add note. Please try again.');
                     }
                 })
                 .catch(err => {
                     console.error(err);
-                    alert('An error occurred while adding the note. Please try again.');
+                    window.miniAlert('An error occurred while adding the note. Please try again.');
                 });
             };		
 

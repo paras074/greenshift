@@ -336,13 +336,14 @@
   ════════════════════════════════════════════════════════ */
   function deleteSelected(tableId) {
     var checked = document.querySelectorAll('#' + tableId + ' .row-check:checked');
-    if (!checked.length) { alert('Please select at least one row.'); return; }
-    if (!confirm('Remove ' + checked.length + ' selected record(s)?')) return;
-    checked.forEach(function(cb) {
-      var mainRow   = document.getElementById('row-' + cb.value);
-      var detailRow = mainRow ? mainRow.nextElementSibling : null;
-      if (mainRow)   mainRow.remove();
-      if (detailRow && detailRow.classList.contains('api-detail-row')) detailRow.remove();
+    if (!checked.length) { window.miniAlert('Please select at least one row.'); return; }
+    window.miniConfirm('Remove ' + checked.length + ' selected record(s)?', 'Remove', function () {
+      checked.forEach(function(cb) {
+        var mainRow   = document.getElementById('row-' + cb.value);
+        var detailRow = mainRow ? mainRow.nextElementSibling : null;
+        if (mainRow)   mainRow.remove();
+        if (detailRow && detailRow.classList.contains('api-detail-row')) detailRow.remove();
+      });
     });
   }
 
@@ -1419,7 +1420,7 @@ window.saveTemporaryLead = async function() {
               }, 'https://dialpad.com');
           } else if (data.method === 'user_authentication' && data.payload?.user_authenticated === false) {
               console.warn("Dialpad warning: Agent is not logged into Dialpad inside the iframe workspace.");
-              alert("Please log into your Dialpad account inside the dialer view first.");
+              window.miniAlert("Please log into your Dialpad account inside the dialer view first.");
           }
       }
   };
@@ -1448,7 +1449,7 @@ window.startCallLead = async function () {
         const phoneNumber = phoneSpan.value.trim();
 
         if (!phoneNumber) {
-            alert("No target phone number found.");
+            window.miniAlert("No target phone number found.");
             buttn.disabled = false;
             buttn.innerHTML = 'Start Call';
             return;
@@ -1477,7 +1478,7 @@ window.startCallLead = async function () {
         const check = await response.json();
 
         if (check.blocked) {
-            alert("This phone number is blocked.");
+            window.miniAlert("This phone number is blocked.");
             buttn.disabled = false;
             buttn.innerHTML = 'Start Call';
             return;
@@ -1527,7 +1528,7 @@ window.startCallLead = async function () {
 
     } catch (error) {
         console.error(error);
-        alert("Something went wrong.");
+        window.miniAlert("Something went wrong.");
 
         const buttn = document.getElementById('startCallButton');
         if (buttn) {

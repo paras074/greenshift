@@ -715,7 +715,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(result => {
             if (result.blocked) {
-                alert("This phone number is blocked.");
+                window.miniAlert("This phone number is blocked.");
                 return;
             }
         
@@ -773,7 +773,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .catch(error => {
             console.error(error);
-            alert("Unable to verify phone number.");
+            window.miniAlert("Unable to verify phone number.");
         });
         
     });
@@ -1278,9 +1278,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
             }
 
-            window.deleteAttachment = async function(id, btn) {
-
-                if (!confirm('Are you sure you want to delete this file?')) return;
+            window.deleteAttachment = function(id, btn) {
+                window.miniConfirm('Are you sure you want to delete this file?', 'Delete', function () { _deleteAttachment(id, btn); });
+            }
+            async function _deleteAttachment(id, btn) {
 
                 const item = btn.closest('.cl-file-item');
 
@@ -1313,7 +1314,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 } catch (error) {
                     console.error(error);
-                    alert('Delete failed');
+                    window.miniAlert('Delete failed');
 
                     // restore button
                     btn.disabled = false;
@@ -1374,7 +1375,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 // 3. Function to Save a New Note
                 window.saveNote = async function() {
                     const data = document.getElementById('noteData').value;
-                    if (!data) return alert("Please type a note.");
+                    if (!data) return window.miniAlert("Please type a note.");
 
                     try {
                         const response = await fetch("{{ route('notes.store') }}", {
@@ -1404,7 +1405,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 // 3. Function to Save a New Note
                 window.CallNoteAdd = async function() {
                     const data = document.getElementById('callNoteInput').value;
-                    if (!data) return alert("Please type a note.");
+                    if (!data) return window.miniAlert("Please type a note.");
 
                     try {
                         const response = await fetch("{{ route('notes.store') }}", {
@@ -1591,14 +1592,13 @@ document.addEventListener("DOMContentLoaded", function() {
             };
 
             window.updateLOA = function() {
-                let confirmUpdate = confirm(
-                    'Previous LOA will be removed from the website and replaced with the newly generated LOA. Do you want to continue?'
+                window.miniConfirm(
+                    'Previous LOA will be removed from the website and replaced with the newly generated LOA. Do you want to continue?',
+                    'Continue',
+                    _updateLOA
                 );
-
-                if (!confirmUpdate) {
-                    return;
-                }
-
+            };
+            function _updateLOA() {
                 let btn = document.getElementById('btnGenerateLOA');
                 setBtnState(btn, 'Updating...', 'loading');
 

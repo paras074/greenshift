@@ -103,7 +103,7 @@
               @endcan
               @can('delete users')
                 @if($user->id !== auth()->id())
-                  <form method="POST" action="{{ route('users.destroy', $user) }}" onsubmit="return confirm('Delete {{ $user->name }}?')" style="display:inline;">
+                  <form method="POST" action="{{ route('users.destroy', $user) }}" data-confirm="Delete {{ $user->name }}?" data-confirm-btn="Delete" style="display:inline;">
                     @csrf @method('DELETE')
                     <button type="submit" class="gs-edit-btn" title="Delete" style="border-color:rgba(220,38,38,0.3); color:#dc2626;">
                       <i class="bi bi-trash-fill"></i>

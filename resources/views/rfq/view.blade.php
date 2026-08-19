@@ -161,7 +161,7 @@
                                             @endcan
                                             
                                             @can('delete rfq')
-                                                <form action="{{ route('rfq_quotes.destroy', $quote->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this quote?');" style="display: inline-block;">
+                                                <form action="{{ route('rfq_quotes.destroy', $quote->id) }}" method="POST" data-confirm="Are you sure you want to delete this quote?" data-confirm-btn="Delete" style="display: inline-block;">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn text-danger p-0 border-0" style="background: none; font-size: 1.2rem; line-height: 1;">

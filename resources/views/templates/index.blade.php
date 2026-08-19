@@ -67,7 +67,7 @@
               @endcan
               @can('delete templates')
                 <form method="POST" action="{{ route('templates.destroy', $template) }}"
-                      onsubmit="return confirm('Delete template: {{ $template->name }}?')" style="display:inline;">
+                      data-confirm="Delete template: {{ $template->name }}?" data-confirm-btn="Delete" style="display:inline;">
                   @csrf @method('DELETE')
                   <button type="submit" class="gs-edit-btn" title="Delete"
                     style="border-color:rgba(220,38,38,0.3); color:#dc2626;">

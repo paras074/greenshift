@@ -355,13 +355,17 @@ window.initMultiselectSearch = function(inputId, listClass) {
     let action = null;
     if (!overlay) return;
 
-    function open(msg, okLabel, onOk) {
+    function open(msg, okLabel, onOk, alertMode) {
         textEl.textContent = msg || 'Are you sure?';
-        okBtn.textContent = okLabel || 'Confirm';
+        okBtn.textContent = okLabel || (alertMode ? 'OK' : 'Confirm');
+        if (cancel) cancel.style.display = alertMode ? 'none' : '';
         action = onOk;
         overlay.classList.add('show');
     }
-    window.miniConfirm = open;
+    // Confirm dialog: OK + Cancel. onOk fires only on OK.
+    window.miniConfirm = function (msg, okLabel, onOk) { open(msg, okLabel, onOk, false); };
+    // Alert dialog: single OK button (message only). onOk optional (fires on OK).
+    window.miniAlert = function (msg, okLabel, onOk) { open(msg, okLabel || 'OK', onOk || null, true); };
     function close() { overlay.classList.remove('show'); action = null; }
 
     okBtn.addEventListener('click', () => { if (action) action(); close(); });

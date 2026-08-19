@@ -46,7 +46,7 @@
                 
                 @can('delete lead-steps')
                     <form method="POST" action="{{ route('settings.lead-steps.destroy', $step) }}"
-                        onsubmit="return confirm('Delete {{ $step->name }}?')" style="display:inline;">
+                        data-confirm="Delete {{ $step->name }}?" data-confirm-btn="Delete" style="display:inline;">
                         @csrf @method('DELETE')
                         <button type="submit" class="gs-edit-btn" title="Delete"
                             style="border-color:rgba(220,38,38,0.3); color:#dc2626; background:none; cursor:pointer;">
@@ -130,7 +130,7 @@ $(document).ready(function () {
                     // Optional: show a quick toast notification here
                 },
                 error: function() {
-                    alert('Error updating order');
+                    window.miniAlert('Error updating order');
                 }
             });
         }

@@ -269,7 +269,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr>
+                            <tr class="no-data-row">
                                 <td colspan="5" class="text-center py-4 text-muted">
                                     No quotes found for this lead.
                                 </td>
@@ -837,15 +837,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ── DataTables Init (DONO TABLES) ──
   if (typeof $ !== 'undefined' && $.fn.DataTable) {
-    if ($('#activityTable tbody tr.no-data-row').length === 0) {
-      // LOA TABLE
-      $('#loaTable').DataTable({
-        ...getDataTableConfig(),
-        columnDefs: [
-          { orderable: false, targets: [4] } // Action column disable
-        ]
-      });
+      // LOA TABLE — init only when it has real rows (skip the empty placeholder)
+      if ($('#loaTable tbody tr.no-data-row').length === 0) {
+        $('#loaTable').DataTable({
+          ...getDataTableConfig(),
+          columnDefs: [
+            { orderable: false, targets: [4] } // Action column disable
+          ]
+        });
+      }
 
+    if ($('#activityTable tbody tr.no-data-row').length === 0) {
       // ACTIVITY TABLE
       $('#activityTable').DataTable({
         ...getDataTableConfig(),

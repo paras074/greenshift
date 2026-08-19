@@ -122,7 +122,9 @@
 
       // Status filter using data-search attribute
       $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-        var statusFilter = $('#filterStatus').val().toLowerCase();
+        var $filterStatus = $('#filterStatus');
+        if (!$filterStatus.length) return true; // no status-filter UI on this page
+        var statusFilter = ($filterStatus.val() || '').toLowerCase();
         if (!statusFilter) return true;
         var statusCell = $(table.row(dataIndex).node()).find('td').eq(5).data('search') || '';
         return statusCell.toLowerCase().indexOf(statusFilter) !== -1;

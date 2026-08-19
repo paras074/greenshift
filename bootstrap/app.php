@@ -12,11 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        
+
         // ── Exempt Dialpad Webhook From CSRF Verification ──
         $middleware->validateCsrfTokens(except: [
-            'dialpad-webhook', 
-            'signable-webhook', 
+            'dialpad-webhook',
+            'signable-webhook',
+        ]);
+
+        // ── Log out users deactivated while already logged in ──
+        $middleware->web(append: [
+            \App\Http\Middleware\EnsureUserIsActive::class,
         ]);
 
         // ── Register Spatie Role & Permission Middleware ──

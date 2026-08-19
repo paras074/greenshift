@@ -49,6 +49,17 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Block inactive accounts even when credentials are correct.
+        if (Auth::user()->status !== 'active') {
+            Auth::logout();
+
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => 'Your account is inactive. Please contact an administrator.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

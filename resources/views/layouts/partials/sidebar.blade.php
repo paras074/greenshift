@@ -301,7 +301,7 @@
     </div>
     <form method="POST" action="{{ route('logout') }}">
       @csrf
-      <x-dropdown-link class="p-0 dropdown-item dashboard-dropdown-logout" :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
+      <x-dropdown-link class="p-0 dropdown-item dashboard-dropdown-logout" :href="route('logout')" onclick="event.preventDefault(); var f=this.closest('form'); if(window.miniConfirm){ window.miniConfirm('Are you sure you want to log out?', 'Log Out', function(){ f.submit(); }); } else { f.submit(); }">
         <i class="bi bi-box-arrow-right"></i>
       </x-dropdown-link>
     </form>

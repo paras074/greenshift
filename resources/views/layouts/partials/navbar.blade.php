@@ -56,7 +56,7 @@
         <li>
           <form method="POST" action="{{ route('logout') }}">
             @csrf
-            <x-dropdown-link class="dropdown-item dashboard-dropdown-logout" :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
+            <x-dropdown-link class="dropdown-item dashboard-dropdown-logout" :href="route('logout')" onclick="event.preventDefault(); var f=this.closest('form'); if(window.miniConfirm){ window.miniConfirm('Are you sure you want to log out?', 'Log Out', function(){ f.submit(); }); } else { f.submit(); }">
               <i class="bi bi-box-arrow-right"></i> {{ __('Log Out') }}
             </x-dropdown-link>
           </form>

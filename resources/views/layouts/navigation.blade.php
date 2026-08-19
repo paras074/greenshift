@@ -29,7 +29,7 @@
                         <x-dropdown-link :href="route('profile.edit')">{{ __('Profile') }}</x-dropdown-link>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">{{ __('Log Out') }}</x-dropdown-link>
+                            <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); var f=this.closest('form'); if(window.miniConfirm){ window.miniConfirm('Are you sure you want to log out?', 'Log Out', function(){ f.submit(); }); } else { f.submit(); }">{{ __('Log Out') }}</x-dropdown-link>
                         </form>
                     </x-slot>
                 </x-dropdown>
@@ -57,7 +57,7 @@
                 <x-responsive-nav-link :href="route('profile.edit')">{{ __('Profile') }}</x-responsive-nav-link>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">{{ __('Log Out') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault(); var f=this.closest('form'); if(window.miniConfirm){ window.miniConfirm('Are you sure you want to log out?', 'Log Out', function(){ f.submit(); }); } else { f.submit(); }">{{ __('Log Out') }}</x-responsive-nav-link>
                 </form>
             </div>
         </div>

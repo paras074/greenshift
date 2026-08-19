@@ -16,12 +16,6 @@
     </div>
   </div>
 
-  @if(session('success'))
-    <div class="gs-alert gs-alert--success" style="margin-bottom:16px;">
-      <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
-    </div>
-  @endif
-
   <div class="gs-table-wrap">
     <table class="gs-table" id="templatesTable" style="width:100%;">
       <thead>

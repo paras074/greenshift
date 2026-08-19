@@ -1426,79 +1426,116 @@ window.saveTemporaryLead = async function() {
 
   window.callstarted = false;
 
-  window.startCallLead = async function() {
+window.startCallLead = async function () {
     try {
         let buttn = document.getElementById('startCallButton');
         buttn.disabled = true;
-        buttn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Please wait…';
+        buttn.innerHTML = 'Please wait...';
 
-        const result = await window.saveTemporaryLead(); 
-        if (result && result.id) {
-            const leadId = result.id;
-     
-          const companyIdInput = document.getElementById('oc_company_id');
-          const phoneSpan = document.getElementById('phone');
-          const dialerBox = document.getElementById('call-dialer');
-          const beforeBox = document.querySelector('.call-dialer-box-before');
-          const iframe = document.getElementById('dialpadFrame');
+        const companyIdInput = document.getElementById('oc_company_id');
+        const phoneSpan = document.getElementById('phone');
+        const dialerBox = document.getElementById('call-dialer');
+        const beforeBox = document.querySelector('.call-dialer-box-before');
+        const iframe = document.getElementById('dialpadFrame');
 
-          if (!companyIdInput || !phoneSpan || !dialerBox || !beforeBox || !iframe) {
-              console.error("Required DOM Elements for Dialpad initialization are missing.", {
-                  companyIdInput: !!companyIdInput,
-                  phoneSpan: !!phoneSpan,
-                  dialerBox: !!dialerBox,
-                  beforeBox: !!beforeBox,
-                  iframe: !!iframe
-              });
-              return;
-          }
-
-          const phoneNumber = phoneSpan.value.trim();
-          
-          if (!phoneNumber) {
-              alert("No target phone number found to connect.");
-              return;
-          }
-
-          console.log("Validation Passed. Target Destination: " + phoneNumber);
-
-          // Save configuration states to memory
-          currentPhoneNumber = phoneNumber;
-          currentPhoneNumber = '8629061873';
-          currentCallPayload = {
-              lead_id: parseInt(leadId, 10),
-              user_id: window.userId || null, 
-              is_temporary: true
-          };
-          console.log("Constructed Outbound payload context:", currentCallPayload);
-
-          // Mount window message listener safely
-          window.removeEventListener('message', handleDialpadMessages);
-          window.addEventListener('message', handleDialpadMessages);
-
-          // CRITICAL: Reveal the containers BEFORE setting iframe.src.
-          // This forces the browser to evaluate the iframe rendering context instantly.
-          beforeBox.classList.remove('d-flex');
-          beforeBox.classList.add('d-none');
-          dialerBox.classList.remove('d-none');
-
-          window.callstarted = true;
-
-          // Load or refresh the Dialpad app environment stream inside the visible iframe
-          const targetSrc = iframe.getAttribute('data-src');
-          if (targetSrc) {
-              console.log("Loading Dialpad CTI URL: ", targetSrc);
-              iframe.src = targetSrc;
-          } else {
-              console.error("Dialpad Error: data-src attribute is empty on the iframe.");
-          }
-        } else {
-            console.error("Failed to save temporary lead. Cannot initiate call without a valid lead ID.");
+        if (!companyIdInput || !phoneSpan || !dialerBox || !beforeBox || !iframe) {
+            console.error("Required DOM elements are missing.");
+            buttn.disabled = false;
+            buttn.innerHTML = 'Start Call';
+            return;
         }
+
+        const phoneNumber = phoneSpan.value.trim();
+
+        if (!phoneNumber) {
+            alert("No target phone number found.");
+            buttn.disabled = false;
+            buttn.innerHTML = 'Start Call';
+            return;
+        }
+
+        // Remove everything except digits
+        const cleanPhoneNumber = phoneNumber.replace(/\D/g, '');
+
+        // ============================
+        // Check blocked number first
+        // ============================
+        const response = await fetch("{{ route('dialpad.check-blocked-number') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document
+                    .querySelector('meta[name="csrf-token"]')
+                    .getAttribute("content"),
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({
+                phone_number: cleanPhoneNumber
+            })
+        });
+
+        const check = await response.json();
+
+        if (check.blocked) {
+            alert("This phone number is blocked.");
+            buttn.disabled = false;
+            buttn.innerHTML = 'Start Call';
+            return;
+        }
+
+        // ============================
+        // Save temporary lead
+        // ============================
+        const result = await window.saveTemporaryLead();
+
+        if (!result || !result.id) {
+            console.error("Failed to save temporary lead.");
+            buttn.disabled = false;
+            buttn.innerHTML = 'Start Call';
+            return;
+        }
+
+        const leadId = result.id;
+
+        // ============================
+        // Continue Dialpad process
+        // ============================
+        currentPhoneNumber = phoneNumber;
+
+        currentCallPayload = {
+            lead_id: parseInt(leadId, 10),
+            user_id: window.userId || null,
+            is_temporary: true
+        };
+
+        console.log("Constructed payload:", currentCallPayload);
+
+        window.removeEventListener('message', handleDialpadMessages);
+        window.addEventListener('message', handleDialpadMessages);
+
+        beforeBox.classList.remove('d-flex');
+        beforeBox.classList.add('d-none');
+
+        dialerBox.classList.remove('d-none');
+
+        window.callstarted = true;
+
+        const targetSrc = iframe.getAttribute('data-src');
+        if (targetSrc) {
+            iframe.src = targetSrc;
+        }
+
     } catch (error) {
-        console.error("Process halted due to error:", error);
+        console.error(error);
+        alert("Something went wrong.");
+
+        const buttn = document.getElementById('startCallButton');
+        if (buttn) {
+            buttn.disabled = false;
+            buttn.innerHTML = 'Start Call';
+        }
     }
-}
+};
 
 document.getElementById('callOffcanvas').addEventListener('hidden.bs.offcanvas', function () {
     console.log("Call offcanvas closed. Cleaning up Dialpad state.");

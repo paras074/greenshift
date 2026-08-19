@@ -788,40 +788,59 @@ window.startCallLead = function() {
     }
 
     let phoneNumber = phoneSpan.innerText.trim().replace(/[\s\-\(\)]/g, '');
+    
     if (!phoneNumber) {
         alert("No target phone number found to connect.");
         return;
     }
 
-    console.log("Validation Passed. Target Destination: " + phoneNumber);
-
-    // Save configuration states to memory
-    currentPhoneNumber = phoneNumber;
-    currentCallPayload = {
-        lead_id: parseInt(leadIdValue, 10),
-        user_id: window.userId || null, 
-        is_temporary: true
-    };
-    console.log("Constructed Outbound payload context:", currentCallPayload);
-
-    // Mount window message listener safely
-    window.removeEventListener('message', handleDialpadMessages);
-    window.addEventListener('message', handleDialpadMessages);
-
-    // CRITICAL: Reveal the containers BEFORE setting iframe.src.
-    // This forces the browser to evaluate the iframe rendering context instantly.
-    beforeBox.classList.remove('d-flex');
-    beforeBox.classList.add('d-none');
-    dialerBox.classList.remove('d-none');
-
-    // Load or refresh the Dialpad app environment stream inside the visible iframe
-    const targetSrc = iframe.getAttribute('data-src');
-    if (targetSrc) {
-        console.log("Loading Dialpad CTI URL: ", targetSrc);
-        iframe.src = targetSrc;
-    } else {
-        console.error("Dialpad Error: data-src attribute is empty on the iframe.");
-    }
+    let cleanPhoneNumber = phoneNumber.replace(/\D/g, '');
+    
+    fetch("{{ route('dialpad.check-blocked-number') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content"),
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({
+            phone_number: cleanPhoneNumber
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.blocked) {
+            alert("This phone number is blocked.");
+            return;
+        }
+        
+        currentPhoneNumber = phoneNumber;
+        currentCallPayload = {
+            lead_id: parseInt(leadIdValue, 10),
+            user_id: window.userId || null, 
+            is_temporary: true
+        };
+    
+        window.removeEventListener('message', handleDialpadMessages);
+        window.addEventListener('message', handleDialpadMessages);
+    
+        beforeBox.classList.remove('d-flex');
+        beforeBox.classList.add('d-none');
+        dialerBox.classList.remove('d-none');
+    
+        const targetSrc = iframe.getAttribute('data-src');
+        if (targetSrc) {
+            console.log("Loading Dialpad CTI URL: ", targetSrc);
+            iframe.src = targetSrc;
+        }
+    
+    })
+    .catch(error => {
+        console.error(error);
+        alert("Unable to verify phone number.");
+    });
 }
 
 </script>
